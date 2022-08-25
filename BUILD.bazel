@@ -1,0 +1,31 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@com_github_grpc_grpc//bazel:python_rules.bzl", "py_grpc_library","py_proto_library")
+
+proto_library(
+    name = "greeting_proto",
+    srcs = ["//:common_proto_files/greeting.proto"],
+)
+py_proto_library(
+    name = "greeting_py_pb2",
+    deps = [":greeting_proto"],
+)
+py_grpc_library(
+    name = "greeting_py_pb2_grpc",
+    srcs = [":greeting_proto"],
+    deps = [":greeting_py_pb2"],
+)
+py_binary(
+    name = "client",
+    srcs = ["client.py"],
+    deps = [
+        ":greeting_py_pb2",
+        ":greeting_py_pb2_grpc"
+        ],
+)
+py_binary(
+    name = "server",
+    srcs = ["server.py"],
+    deps = [
+        ":greeting_py_pb2",
+        ":greeting_py_pb2_grpc"],
+)
